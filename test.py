@@ -1,4 +1,5 @@
 import unittest
+from game import Game, Player, Enemy, battle  # Replace 'your_main_game_file' with the actual name of your game file
 
 class TestGame(unittest.TestCase):
 
