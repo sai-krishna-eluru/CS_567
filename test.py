@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 from io import StringIO
-from your_game_file import Player, Enemy, ItemShop, Game, battle
+from game import Player, Enemy, ItemShop, Game, battle
 
 class TestRPGGame(unittest.TestCase):
     
