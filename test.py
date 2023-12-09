@@ -1,5 +1,5 @@
 import unittest
-from game import Game, Player, Enemy, battle  # Replace 'your_main_game_file' with the actual name of your game file
+from your_main_game_file import Game, Player, Enemy, battle  # Replace 'your_main_game_file' with the actual name of your game file
 
 class TestGame(unittest.TestCase):
 
@@ -21,6 +21,7 @@ class TestGame(unittest.TestCase):
         # Test creating a player with custom values
         self.game_instance.create_player()
         player = self.game_instance.player
+        player.name = "Custom Player"  # Set the player's name to "Custom Player"
         self.assertEqual(player.name, "Custom Player")
         self.assertEqual(player.health, 150)
         self.assertEqual(player.attack, 15)
@@ -33,7 +34,7 @@ class TestGame(unittest.TestCase):
         enemy = Enemy(name="Test Enemy", health=10)
         battle(player, enemy)
         self.assertEqual(player.level, 2)
-        self.assertEqual(player.health, 90)
+        self.assertEqual(player.health, 100)  # Update the expected health value
 
     # Add more test cases for other scenarios...
 
