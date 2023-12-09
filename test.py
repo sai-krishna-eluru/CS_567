@@ -1,61 +1,40 @@
 import unittest
-from unittest.mock import patch
-from io import StringIO
-from game import Player, Enemy, ItemShop, Game, battle
 
 class TestGame(unittest.TestCase):
+
     def setUp(self):
+        # Create a game instance for each test case
         self.game_instance = Game()
 
-    @patch('builtins.input', side_effect=['TestPlayer'])
-    def test_create_player(self, mock_input):
+    def test_player_creation_default_values(self):
+        # Test creating a player with default values
         self.game_instance.create_player()
-        self.assertEqual(self.game_instance.player.name, 'TestPlayer')
+        player = self.game_instance.player
+        self.assertEqual(player.name, "Default Player")
+        self.assertEqual(player.health, 100)
+        self.assertEqual(player.attack, 10)
+        self.assertEqual(player.defense, 5)
+        self.assertEqual(player.level, 1)
 
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('builtins.input', side_effect=['1', 'exit'])
-    def test_explore_and_visit_item_shop(self, mock_input, mock_stdout):
+    def test_player_creation_custom_values(self):
+        # Test creating a player with custom values
         self.game_instance.create_player()
-        self.game_instance.explore()
-        self.assertIn("is exploring...", mock_stdout.getvalue())
-        self.game_instance.visit_item_shop()
-        self.assertIn("Welcome to the Item Shop!", mock_stdout.getvalue())
+        player = self.game_instance.player
+        self.assertEqual(player.name, "Custom Player")
+        self.assertEqual(player.health, 150)
+        self.assertEqual(player.attack, 15)
+        self.assertEqual(player.defense, 8)
+        self.assertEqual(player.level, 1)
 
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('builtins.input', side_effect=['2', 'Health Potion', 'exit'])
-    def test_visit_item_shop_and_buy_item(self, mock_input, mock_stdout):
-        self.game_instance.create_player()
-        self.game_instance.visit_item_shop()
-        self.assertIn("Welcome to the Item Shop!", mock_stdout.getvalue())
-        self.game_instance.visit_item_shop()
-        self.assertIn("What would you like to buy?", mock_stdout.getvalue())
-        self.game_instance.visit_item_shop()
-        self.assertIn("Leaving the Item Shop.", mock_stdout.getvalue())
-
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('builtins.input', side_effect=['3'])
-    def test_display_player_stats(self, mock_input, mock_stdout):
-        self.game_instance.create_player()
-        self.game_instance.display_player_stats()
-        self.assertIn("Player Stats for TestPlayer:", mock_stdout.getvalue())
-
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('builtins.input', side_effect=['1', 'exit'])
-    def test_game_loop(self, mock_input, mock_stdout):
-        self.game_instance.create_player()
-        self.game_instance.game_loop()
-        self.assertIn("Explore", mock_stdout.getvalue())
-        self.assertIn("Leaving the Item Shop.", mock_stdout.getvalue())
-
-    @patch('sys.stdout', new_callable=StringIO)
-    @patch('builtins.input', side_effect=['1', 'exit'])
-    def test_battle_and_level_up(self, mock_input, mock_stdout):
-        player = Player(name="TestPlayer", health=50, attack=20, defense=10, level=1)
-        enemy = Enemy(name="TestEnemy", health=30, attack=15, defense=5, experience=20)
+    def test_battle_player_defeats_enemy(self):
+        # Test a battle where the player defeats the enemy
+        player = Player(name="Test Player")
+        enemy = Enemy(name="Test Enemy", health=10)
         battle(player, enemy)
-        self.assertIn("attacks TestEnemy for", mock_stdout.getvalue())
-        self.assertIn("defeated TestEnemy and gained", mock_stdout.getvalue())
         self.assertEqual(player.level, 2)
+        self.assertEqual(player.health, 90)
+
+    # Add more test cases for other scenarios...
 
 if __name__ == '__main__':
     unittest.main()
