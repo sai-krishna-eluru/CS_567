@@ -87,16 +87,23 @@ class TestRPGGame(unittest.TestCase):
         self.assertEqual(mock_stdout.getvalue(), expected_output)
 
     def test_battle_player_loses(self):
-        player = Player(name="Player1", attack=10, defense=3, health=15)
-        enemy = Enemy(name="Orc", attack=12, defense=5)
-        with patch('builtins.input', return_value="1"):
-            with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
-                battle(player, enemy)
-        expected_output = "A wild Orc appears!\nPlayer1's Health: 15, Orc's Health: 50\n"
-        expected_output += "Player1 attacks Orc for 7 damage.\nOrc attacks Player1 for 9 damage.\n"
-        expected_output += "Player1 was defeated by Orc. Game over!\n"
-        expected_output += "Game Over!\n"  # Add this line to match the expected output
-        self.assertEqual(mock_stdout.getvalue(), expected_output)
+    player = Player(name="Player1", attack=10, defense=3, health=15)
+    enemy = Enemy(name="Orc", attack=12, defense=5)
+    with patch('builtins.input', return_value="1"):
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
+            battle(player, enemy)
+    expected_output = "A wild Orc appears!\nPlayer1's Health: 15, Orc's Health: 50\n"
+    expected_output += "Player1 attacks Orc for 7 damage.\nOrc attacks Player1 for 9 damage.\n"
+    expected_output += "Player1 was defeated by Orc. Game over!\n"
+    expected_output += "Game Over!\n"  # Add this line to match the expected output
+    actual_output = mock_stdout.getvalue()
+
+    print("Expected Output:")
+    print(expected_output)
+    print("Actual Output:")
+    print(actual_output)
+
+    self.assertEqual(actual_output, expected_output)
 
 
 if __name__ == '__main__':
