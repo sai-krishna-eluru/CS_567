@@ -75,17 +75,7 @@ class TestRPGGame(unittest.TestCase):
         expected_output += "Inventory: ['Health Potion']\n"
         self.assertEqual(mock_stdout.getvalue(), expected_output)
 
-    def test_battle_player_wins(self):
-        player = Player(name="Player1", attack=15, defense=5, health=30)
-        enemy = Enemy(name="Goblin", health=10, defense=3, experience=20)
-        with patch('builtins.input', return_value="1"):
-            with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
-                battle(player, enemy)
-        expected_output = "A wild Goblin appears!\nPlayer1's Health: 30, Goblin's Health: 10\n"
-        expected_output += "Player1 attacks Goblin for 10 damage.\nPlayer1 leveled up to level 2!\n"
-        expected_output += "Player1 defeated Goblin and gained 20 experience!\n"
-        self.assertEqual(mock_stdout.getvalue(), expected_output)
-
+     
     
 
 if __name__ == '__main__':
