@@ -1,6 +1,6 @@
 import unittest
 import os
-from code import Task, TaskManager
+from code import Task, TaskManager, TaskStatistics
 
 class TestTaskManager(unittest.TestCase):
     def setUp(self):
@@ -52,6 +52,62 @@ class TestTaskManager(unittest.TestCase):
         self.assertEqual(loaded_manager.tasks[1].priority, 2)
 
         os.remove("test_tasks.pkl")
+
+    def test_remove_completed_tasks(self):
+        task1 = Task("Completed task", 1)
+        task1.completed = True
+        task2 = Task("Incomplete task", 2)
+        self.manager.add_task(task1)
+        self.manager.add_task(task2)
+
+        self.assertEqual(len(self.manager.tasks), 2)
+        self.manager.remove_completed_tasks()
+        self.assertEqual(len(self.manager.tasks), 1)
+        self.assertEqual(self.manager.tasks[0].description, "Incomplete task")
+
+    def test_display_tasks(self):
+        task1 = Task("Display task", 2)
+        self.manager.add_task(task1)
+        with self.assertOutput(stdout="1. Priority: 2, Description: Display task, Status: Pending\n"):
+            self.manager.display_tasks()
+
+    def test_get_high_priority_tasks(self):
+        task1 = Task("High priority", 3)
+        task2 = Task("Low priority", 1)
+        task3 = Task("Another high priority", 3)
+        self.manager.add_task(task1)
+        self.manager.add_task(task2)
+        self.manager.add_task(task3)
+
+        high_priority_tasks = self.manager.get_high_priority_tasks()
+        self.assertEqual(len(high_priority_tasks), 2)
+        self.assertEqual(high_priority_tasks[0].description, "High priority")
+        self.assertEqual(high_priority_tasks[1].description, "Another high priority")
+
+    def test_update_task_description(self):
+        task = Task("Old description", 1)
+        self.manager.add_task(task)
+        self.manager.update_task_description(0, "New description")
+        self.assertEqual(self.manager.tasks[0].description, "New description")
+
+class TestTaskStatistics(unittest.TestCase):
+    def test_task_statistics(self):
+        manager = TaskManager()
+        task_stats = TaskStatistics(manager)
+
+        task1 = Task("Task 1", 1)
+        task2 = Task("Task 2", 2)
+        task3 = Task("Task 3", 3)
+        manager.add_task(task1)
+        manager.add_task(task2)
+        manager.add_task(task3)
+
+        self.assertEqual(task_stats.count_tasks(), 3)
+
+        task1.completed = True
+        task2.completed = True
+        self.assertEqual(task_stats.count_completed_tasks(), 2)
+        self.assertEqual(task_stats.count_pending_tasks(), 1)
 
 if __name__ == "__main__":
     unittest.main()
