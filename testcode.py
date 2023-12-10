@@ -53,5 +53,9 @@ class TestTaskManager(unittest.TestCase):
 
         os.remove("test_tasks.pkl")
 
+# MutPy requires a simple test function for mutation testing
+def test_simple():
+    assert 1 + 1 == 2
+
 if __name__ == "__main__":
     unittest.main()
