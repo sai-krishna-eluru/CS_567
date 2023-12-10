@@ -145,9 +145,12 @@ class TestTaskExecutor(unittest.TestCase):
     def test_execute_task(self):
         executor = TaskExecutor()
         task = Task("Task to execute", 3)
-        
-        with self.assertWarns(UserWarning):
+
+        with warnings.catch_warnings(record=True) as warning_list:
+            warnings.simplefilter("always")  # Capture all warnings
             executor.execute_task(task)
+
+            self.assertTrue(any(isinstance(w.message, UserWarning) for w in warning_list))
 
 class TestTaskScheduler(unittest.TestCase):
     def setUp(self):
@@ -169,23 +172,17 @@ class TestTaskAssigner(unittest.TestCase):
     def test_assign_task(self):
         assigner = TaskAssigner()
         task = Task("Task to assign", 2)
-        
-        with io.StringIO() as captured_output, contextlib.redirect_stdout(captured_output):
-            assigner.assign_task(task)
-            log_output = captured_output.getvalue()
 
-        self.assertIn("Task assigned - Task to assign", log_output)
+        with self.assertWarns(UserWarning):
+            assigner.assign_task(task)
 
 class TestTaskReporter(unittest.TestCase):
     def test_report_task(self):
         reporter = TaskReporter()
         task = Task("Task to report", 1)
-        
-        with io.StringIO() as captured_output, contextlib.redirect_stdout(captured_output):
-            reporter.report_task(task)
-            log_output = captured_output.getvalue()
 
-        self.assertIn("Task reported - Task to report", log_output)
+        with self.assertWarns(UserWarning):
+            reporter.report_task(task)
 
 if __name__ == "__main__":
     unittest.main()
