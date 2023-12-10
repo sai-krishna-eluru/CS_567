@@ -67,37 +67,3 @@ class TaskStatistics:
 
     def count_pending_tasks(self):
         return self.count_tasks() - self.count_completed_tasks()
-
-# Extra lines to meet the requirement
-class TaskFormatter:
-    def format_task(self, task):
-        return f"Description: {task.description}, Priority: {task.priority}, Completed: {task.completed}"
-
-class TaskLogger:
-    def log_task(self, task):
-        print(f"Task logged - {task.description}")
-
-class TaskValidator:
-    def validate_task(self, task):
-        if not task.description:
-            raise ValueError("Task description cannot be empty")
-        if task.priority < 1 or task.priority > 3:
-            raise ValueError("Invalid priority level")
-
-# Additional lines to meet the requirement
-class TaskExecutor:
-    def execute_task(self, task):
-        print(f"Task executed - {task.description}")
-
-class TaskScheduler:
-    def schedule_task(self, task):
-        print(f"Task scheduled - {task.description}")
-
-# More lines to meet the requirement
-class TaskAssigner:
-    def assign_task(self, task):
-        print(f"Task assigned - {task.description}")
-
-class TaskReporter:
-    def report_task(self, task):
-        print(f"Task reported - {task.description}")
