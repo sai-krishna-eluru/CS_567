@@ -150,7 +150,20 @@ class TestTaskExecutor(unittest.TestCase):
             executor.execute_task(task)
 
 class TestTaskScheduler(unittest.TestCase):
-    # ... (previous test cases)
+    def setUp(self):
+        self.manager = TaskManager()
+        self.scheduler = TaskScheduler()
+
+    def test_schedule_task(self):
+        task = Task("Task to schedule", 2)
+        self.manager.add_task(task)
+        
+        initial_tasks_count = len(self.manager.tasks)
+        self.scheduler.schedule_task(task)
+        scheduled_tasks_count = len(self.manager.get_priority_tasks(2))
+
+        self.assertEqual(scheduled_tasks_count, 1)
+        self.assertEqual(initial_tasks_count, scheduled_tasks_count + 1)
 
 class TestTaskAssigner(unittest.TestCase):
     def test_assign_task(self):
