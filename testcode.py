@@ -169,15 +169,23 @@ class TestTaskAssigner(unittest.TestCase):
     def test_assign_task(self):
         assigner = TaskAssigner()
         task = Task("Task to assign", 2)
-        with self.assertLogs(level="INFO"):
+        
+        with io.StringIO() as captured_output, contextlib.redirect_stdout(captured_output):
             assigner.assign_task(task)
+            log_output = captured_output.getvalue()
+
+        self.assertIn("Task assigned - Task to assign", log_output)
 
 class TestTaskReporter(unittest.TestCase):
     def test_report_task(self):
         reporter = TaskReporter()
         task = Task("Task to report", 1)
-        with self.assertLogs(level="INFO"):
+        
+        with io.StringIO() as captured_output, contextlib.redirect_stdout(captured_output):
             reporter.report_task(task)
+            log_output = captured_output.getvalue()
+
+        self.assertIn("Task reported - Task to report", log_output)
 
 if __name__ == "__main__":
     unittest.main()
