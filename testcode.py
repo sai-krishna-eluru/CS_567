@@ -1,6 +1,7 @@
 import unittest
+import io
 import os
-from code import Task, TaskManager, TaskStatistics
+from code import Task, TaskManager, TaskStatistics, TaskFormatter, TaskLogger, TaskValidator, TaskExecutor, TaskScheduler, TaskAssigner, TaskReporter
 
 class TestTaskManager(unittest.TestCase):
     def setUp(self):
@@ -68,8 +69,14 @@ class TestTaskManager(unittest.TestCase):
     def test_display_tasks(self):
         task1 = Task("Display task", 2)
         self.manager.add_task(task1)
-        with self.assertOutput(stdout="1. Priority: 2, Description: Display task, Status: Pending\n"):
-            self.manager.display_tasks()
+
+        expected_output = "1. Priority: 2, Description: Display task, Status: Pending\n"
+
+        with io.StringIO() as captured_output:
+            with self.assertRaises(SystemExit):
+                self.manager.display_tasks()
+
+            self.assertEqual(captured_output.getvalue(), expected_output)
 
     def test_get_high_priority_tasks(self):
         task1 = Task("High priority", 3)
@@ -109,5 +116,38 @@ class TestTaskStatistics(unittest.TestCase):
         self.assertEqual(task_stats.count_completed_tasks(), 2)
         self.assertEqual(task_stats.count_pending_tasks(), 1)
 
-if __name__ == "__main__":
-    unittest.main()
+class TestTaskFormatter(unittest.TestCase):
+    def test_format_task(self):
+        formatter = TaskFormatter()
+        task = Task("Formatted task", 2)
+        formatted_task = formatter.format_task(task)
+        self.assertEqual(formatted_task, "Description: Formatted task, Priority: 2, Completed: False")
+
+class TestTaskLogger(unittest.TestCase):
+    def test_log_task(self):
+        logger = TaskLogger()
+        task = Task("Logged task", 1)
+        with self.assertLogs(level="INFO"):
+            logger.log_task(task)
+
+class TestTaskValidator(unittest.TestCase):
+    def test_validate_task(self):
+        validator = TaskValidator()
+        valid_task = Task("Valid task", 2)
+        validator.validate_task(valid_task)
+
+        invalid_task = Task("", 0)
+        with self.assertRaises(ValueError):
+            validator.validate_task(invalid_task)
+
+class TestTaskExecutor(unittest.TestCase):
+    def test_execute_task(self):
+        executor = TaskExecutor()
+        task = Task("Task to execute", 3)
+        with self.assertWarns(UserWarning):
+            executor.execute_task(task)
+
+class TestTaskScheduler(unittest.TestCase):
+    def test_schedule_task(self):
+        scheduler = TaskScheduler()
+       
