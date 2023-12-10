@@ -1,6 +1,7 @@
 import unittest
 import io
 import os
+import contextlib
 from code import Task, TaskManager, TaskStatistics, TaskFormatter, TaskLogger, TaskValidator, TaskExecutor, TaskScheduler, TaskAssigner, TaskReporter
 
 class TestTaskManager(unittest.TestCase):
@@ -73,7 +74,7 @@ class TestTaskManager(unittest.TestCase):
         expected_output = "1. Priority: 2, Description: Display task, Status: Pending\n"
 
         with io.StringIO() as captured_output:
-            with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(captured_output):
                 self.manager.display_tasks()
 
             self.assertEqual(captured_output.getvalue(), expected_output)
@@ -144,10 +145,26 @@ class TestTaskExecutor(unittest.TestCase):
     def test_execute_task(self):
         executor = TaskExecutor()
         task = Task("Task to execute", 3)
+        
         with self.assertWarns(UserWarning):
             executor.execute_task(task)
 
 class TestTaskScheduler(unittest.TestCase):
-    def test_schedule_task(self):
-        scheduler = TaskScheduler()
-       
+    # ... (previous test cases)
+
+class TestTaskAssigner(unittest.TestCase):
+    def test_assign_task(self):
+        assigner = TaskAssigner()
+        task = Task("Task to assign", 2)
+        with self.assertLogs(level="INFO"):
+            assigner.assign_task(task)
+
+class TestTaskReporter(unittest.TestCase):
+    def test_report_task(self):
+        reporter = TaskReporter()
+        task = Task("Task to report", 1)
+        with self.assertLogs(level="INFO"):
+            reporter.report_task(task)
+
+if __name__ == "__main__":
+    unittest.main()
